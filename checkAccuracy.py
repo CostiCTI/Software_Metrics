@@ -6,20 +6,26 @@ import json
 import DecisionTreeAlgorithm as dt
 import RandomForestAlgorithm as rf
 import SVMAlgorithm as svm
+import KNNAlgorithm as knn
+import LogisticReg as logr
 
-FILE_NAME = 'data/metrics_set.csv'
+FILE_NAME = 'data/set.csv'
 DESTINATION_FILE = 'results.json'
 
 def main():
 
-    dtAccuracy  = dt.decisionTree(FILE_NAME)
-    rfAccuracy  = rf.randomForest(FILE_NAME)
-    svmAccuracy = svm.SVMClassification(FILE_NAME)
+    dtAccuracy   = dt.decisionTree(FILE_NAME)
+    rfAccuracy   = rf.randomForest(FILE_NAME)
+    svmAccuracy  = svm.SVMClassification(FILE_NAME)
+    knnAccuracy  = knn.KNNClassification(FILE_NAME)
+    logrAccuracy = logr.logisticReg(FILE_NAME)
 
     accuracyDict = {}
-    accuracyDict['DecisionTree'] = dtAccuracy
-    accuracyDict['RandomForest'] = rfAccuracy
-    accuracyDict['SVM'] = svmAccuracy
+    accuracyDict['DecisionTree'] = round(dtAccuracy, 2)
+    accuracyDict['RandomForest'] = round(rfAccuracy, 2)
+    accuracyDict['SVM'] = round(svmAccuracy, 2)
+    accuracyDict['KNN'] = round(knnAccuracy, 2)
+    accuracyDict['LogisticRegression'] = round(logrAccuracy, 2)
 
     with open(DESTINATION_FILE, 'w') as data_file:
         json.dump(accuracyDict, data_file, indent=4, sort_keys=True)
