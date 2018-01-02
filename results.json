@@ -1,7 +1,0 @@
-{
-    "DecisionTree": 86.42,
-    "KNN": 87.5,
-    "LogisticRegression": 87.77,
-    "RandomForest": 89.78,
-    "SVM": 87.5
-}
