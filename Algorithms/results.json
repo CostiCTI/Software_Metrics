@@ -1,7 +1,9 @@
 {
-    "DecisionTree": 86.56,
-    "KNN": 87.5,
-    "LogisticRegression": 87.77,
-    "RandomForest": 89.52,
-    "SVM": 87.5
+    "AdaBoost": 83.66,
+    "DecisionTree": 81.07,
+    "GradientBoost": 84.23,
+    "KNN": 84.06,
+    "LogisticRegression": 83.88,
+    "RandomForest": 82.09,
+    "SVM": 83.62
 }

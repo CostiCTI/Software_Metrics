@@ -5,12 +5,11 @@
 import numpy as np
 import pandas as pd
 
-from sklearn.cross_validation import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 
 
-def randomForest(file_name):
+def randomForest(data_train, data_test, target_train, target_test):
     '''
         This function train a model with RandomForestClassifier algorithm from sklearn and
     get the accuracy of the model
@@ -18,33 +17,21 @@ def randomForest(file_name):
 
     Parameters:
     -----------
-    file_name           string, contains the name of the file where we find data for training
+    data_train          numpy.array, data for training
+    data_test           numpy.array, data for testing 
+    target_train        numpy.array, target for training set(the same length as data_train)
+    target_test         numpy.array, target for testing set(the same length as data_test)
 
     Returns:
     ----------
     accuracy            float, the accuracy of the model
     '''
 
-    # read data from csv and save it in a dataframe
-    df = pd.read_csv(file_name)
-
-    # split data into known data and data to predict(target)
-    features = list(df.columns[:21])
-    results = [df.columns[21]]
-
-    data = df[features]
-    target = df[results]
-
-    # split data into train data and test data
-    # here we split data in 80% train data and 20% test data
-    data_train, data_test, target_train, target_test = train_test_split(data, 
-                                                target, test_size=0.20, random_state=42)
-
     # make a RandomForestClassifier model to apply the Random Forest alogorithm on data
-    rfc = RandomForestClassifier(n_estimators=300)
+    rfc = RandomForestClassifier(n_estimators=30)
 
      # fit the model with training data
-    rfc.fit(data_train, target_train)
+    rfc.fit(data_train, target_train.ravel())
 
     # get predictions on test data
     prediction = rfc.predict(data_test)
@@ -53,3 +40,5 @@ def randomForest(file_name):
     accuracy = accuracy_score(target_test, prediction) * 100
 
     return accuracy
+
+
