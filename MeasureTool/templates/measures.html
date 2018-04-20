@@ -1,0 +1,77 @@
+<head>
+    <title>Measure - Home</title>
+    <meta charset="utf-8">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+  <nav class="navbar navbar-default" style="background-color: rgba(15,24,25,0.91);">
+      <div class="container-fluid">
+      <div id="navbar"  class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+            <li><a href="/home">MEASURE</a></li>
+            <li><a href="/home">Home</a></li>
+            <li><a href="/projects">Projects</a></li>
+            <li><a href="/account">Account</a></li>
+        </ul>
+      </div>
+      </div>
+  </nav>
+
+  <h3 style="text-align: center;"> Project: </h3>
+  <hr>
+  
+
+  <form action="", method="post" style="text-align: center;">
+    <div class="btn-group">
+    <input type = "submit" name = "commbut" value="Comments G" class="btn btn-success" />
+    <input type = "submit" name = "opbut" value="Operands G" class="btn btn-success" />
+    <input type = "submit" name = "commbut" value="Comments G" class="btn btn-success" />
+    <input type = "submit" name = "commbut" value="Comments G" class="btn btn-success" />
+    </div>
+  </form>
+
+  <hr>
+    <div class="container" align="left">
+        <embed type="image/svg+xml" src= {{ gdata|safe }} />
+    </div>
+  <hr>
+    <p> Score </p>
+  <hr>
+    <p> Arima prediction </p>
+  <hr>
+
+    <p> Add phase button </p>
+
+    <form action="" method="post">
+      <p>
+          {{ form.codelines.label }}<br>
+          {{ form.codelines }}
+      </p>
+      <p>
+          {{ form.commlines.label }}<br>
+          {{ form.commlines }}
+      </p>
+      <p>
+          {{ form.operlines.label }}<br>
+          {{ form.operlines() }} 
+      </p>
+      <p>{{ form.addbut() }}</p>
+      {{ form.csrf_token }}
+
+  </form>
+  <hr>
+    <p> Kibana frame </p>
+  <hr>
+
+  <style>
+  
+    .h2 {
+        text-align: center;
+    }
+
+  </style>
+
+</body>
+</html>
