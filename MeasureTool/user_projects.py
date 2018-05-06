@@ -5,6 +5,7 @@
 import time
 import json
 import math
+import pickle
 
 from datetime import datetime
 from elasticsearch import Elasticsearch
@@ -50,28 +51,73 @@ def get_projects():
 	return projects
 
 
-def add_phase(index, code, comm, op):
+def load_model(file_name): 
+    # load the model
+    filename = file_name + '.sav'
+    loaded_model = pickle.load(open(filename, 'rb'))
+    
+    return loaded_model
 
-	ES_HOST    = {"host" : "localhost", "port" : 9200}
-	INDEX_NAME = index
-	TYPE_NAME  = 'metric'
-	
-	es = Elasticsearch()
 
-	MODELCOMM = load_model('../model_lr_codecomm')
-	MODELOP = load_model('../model_lr_code_operands')
+def get_score(lcode, lcome, oper):
 
-	data_dict['lcom_pred'] = (MODELCOMM.predict(data_dict['lcode']))[0][0]
+	MODELCOMM = load_model('models/model_lr_codecomm')
+	MODELOP = load_model('models/model_lr_code_operands')
 
-	compred = math.floor((MODELCOMM.predict(data_dict['code']))[0][0])
-	oppred  = math.floor((MODELOP.predict(data_dict['code']))[0][0])
+	compred = math.floor((MODELCOMM.predict(lcode))[0][0])
+	oppred  = math.floor((MODELOP.predict(lcode))[0][0])
 
 	if compred < 0:
 		compred = 0
 	if oppred < 0:
 		oppred = 0
 
-	es.index(index=INDEX_NAME, doc_type='metric', body={
+	#with open('cfg/score_rules.json') as json_data:
+    #	d = json.load(json_data)
+
+	score = 0
+	dif = abs(lcome - compred)
+	if compred != 0:
+		p = dif * 100 / compred
+	else:
+		# no data, new project
+		p = 100
+	if p <= 10:
+		score = 5
+	elif p <= 20:
+		score = 4
+	elif p <= 35:
+		score = 3
+	elif p <= 50:
+		score = 2
+	else:
+		score = 1
+
+	return score
+
+
+def add_phase(index, code, comm, op):
+
+	print ('aici')
+
+	ES_HOST    = {"host" : "localhost", "port" : 9200}
+	INDEX_NAME = 'measure_' + index
+	TYPE_NAME  = 'metric'
+	
+	es = Elasticsearch()
+
+	MODELCOMM = load_model('models/model_lr_codecomm')
+	MODELOP = load_model('models/model_lr_code_operands')
+
+	compred = math.floor((MODELCOMM.predict(code))[0][0])
+	oppred  = math.floor((MODELOP.predict(code))[0][0])
+
+	if compred < 0:
+		compred = 0
+	if oppred < 0:
+		oppred = 0
+
+	x = es.index(index=INDEX_NAME, doc_type='metric', body={
 		'id': 1,
 		'insert_date': int(time.time() * 1000),
 		'lcode': code,
@@ -81,16 +127,18 @@ def add_phase(index, code, comm, op):
 		'operands_pred': oppred
 	})
 
+	print (x)
 
 def get_project_data(index):
 
 	ES_HOST    = {"host" : "localhost", "port" : 9200}
-	INDEX_NAME = index
+	INDEX_NAME = 'measure_' + index
 	TYPE_NAME  = 'metric'
 	
 	es = Elasticsearch()
 
 	query = {
+		'size': 1000,
 		'query': {
 			'match_all' : {}
 			}
@@ -98,9 +146,13 @@ def get_project_data(index):
 
 	res = es.search(index=INDEX_NAME, body=query)
 
-	import pprint as pp
+	result = []
 	for r in res['hits']['hits']:
-		pp.pprint(r)
+		d = r['_source']
+		result.append(d)
+
+	return result
+
 
 
 
@@ -157,4 +209,4 @@ def create_new_project(index_name):
 
 
 #add_phase('measure_audi', 226, 63, 112, 318, 298)
-#get_project_data('measure_audi')
+#get_project_data('zet')

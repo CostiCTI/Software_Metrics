@@ -5,11 +5,12 @@
       <title>Measure - Home</title>
       <meta charset="utf-8">
       <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+      <link href='https://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
   </head>
 
   <body>
 
-    <nav class="navbar navbar-default" style="background-color: rgba(15,24,25,0.91);">
+    <nav class="navbar navbar-default" style="background-color: rgba(24, 41, 43, 0.91);">
         <div class="container-fluid">
         <div id="navbar"  class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
@@ -22,50 +23,69 @@
         </div>
     </nav>
     
-    <h1> PROJECTS </h1>
+    <div>
+        <h1 class="ptitle"> PROJECTS </h1>
+    </div>
     <hr>
     <br>
 
     <form method="post" action="">
-        <div>
+        <div style="width: 80%; margin: auto;">
             {% for project in projects %}
                 <div class="projectdiv" type="submit">
                     <input type = "submit" name = {{ project }} value="{{ project }}" class="btn btn-primary btn-lg" class="subbut"/>
-                    <input type = "submit" name = {{ project + 'del'}} value="X" class="xbut" style="float: right; background-color: red;"/>
+                    <input type = "submit" name = {{ project + 'del'}} value="X" class="xbut" style="float: right; background-color: pink;"/>
                 </div>
-                <br>
             {% endfor %}
         </div>
         <hr>
-        <p class="par"> New Project: </p>
-        <input type="text" name="lname" class="createtext" /> 
-        <input type = "submit" name = "create" value="Create" class="createbut"/>
+        <div class="addpdiv">
+            <p class="par"> Add new project: </p>
+            <input type="text" name="lname" class="createtext" /> 
+            <input type="submit" name = "create" value="Create" class="btn btn-primary" style="width:25%; height: 40px;"/>
+        </div>
     </form>
+
+    <hr>
 
 
     <style>
-        .par {
-            text-decoration: none;
-            font-size: 20px;
-            margin-left: 10px;
+
+        body {
+            background: rgb(44, 43, 43)
+
         }
+
+        .addpdiv {
+            /*background: linear-gradient(#13547a, #80d0c7);*/
+            background: rgb(40, 129, 40);
+            display: inline-block;
+            width: 40%;
+            margin-left: 10%;
+            height: 100px;
+            border:2px solid rgb(47, 65, 59);
+            border-radius: 4px;
+        }
+
+        .par {
+            font-family: Helvetica, sans-serif;
+            font-size: 20px;
+            letter-spacing: 2px;
+            color: rgb(31, 27, 27);
+            margin-left: 1%;
+        }
+
         .createtext {
-            margin-left: 30px;
-            width: 60%;
-            padding: 12px 20px;
-            margin: 8px 0;
+            font-size: 20px;
+            color: red;
+            margin-left: 1%;
+            width: 70%;
             display: inline-block;
             border: 1px solid #ccc;
             border-radius: 4px;
             box-sizing: border-box;
         }
-        .createbut {
-            margin-left: 10px;
-            width: 10%;
-            height: 30px;
-            background-color: green;
-            border-radius: 4px
-        }
+
         .createbut:hover {
             opacity: 0.8;
         }
@@ -73,20 +93,38 @@
         .subbut {
             width: 25%;
             height: 50px;
-            border-radius: 8px
+            border-radius: 8px;
+            color: tomato;
         }
 
         .projectdiv {
-            background-color: rgb(59, 117, 20);
-            width: 75%;
+            /*background: linear-gradient(#13547a, #80d0c7);*/
+            background: rgb(40, 129, 40);
             height: 50px;
-            padding-left: 20px;
-            border-radius: 8px;
+            display: inline-block;
+            width: 23%;
+            height: 100px;
+            border:2px solid rgb(8, 107, 74);
+            border-radius: 4px;
+            margin-top: 10px;
+            margin-left: 10px;
         }
 
         .subbut:hover {
             opacity: 0.8;
+            width: 30%;
+            height: 60px;
         }
+
+        .ptitle {
+            text-align: center;
+            font-family: 'Oswald', Helvetica, sans-serif;
+            font-size: 60px;
+            transform: skewY(0deg);
+            letter-spacing: 4px;
+            color: rgb(36, 134, 36);
+        }
+
     </style>
 
 

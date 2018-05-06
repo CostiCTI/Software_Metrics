@@ -2,6 +2,8 @@
     <title>Measure - Home</title>
     <meta charset="utf-8">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
 </head>
 
 <body>
@@ -19,30 +21,55 @@
       </div>
   </nav>
 
-  <h3 style="text-align: center;"> Project: </h3>
+  <h3 class="ptitle"> Project: {{pname}} </h3>
   <hr>
   
 
-  <form action="", method="post" style="text-align: center;">
+  <form class="ptitle" name=gform action="", method="post" style="text-align: center;">
     <div class="btn-group">
-    <input type = "submit" name = "commbut" value="Comments G" class="btn btn-success" />
-    <input type = "submit" name = "opbut" value="Operands G" class="btn btn-success" />
-    <input type = "submit" name = "commbut" value="Comments G" class="btn btn-success" />
-    <input type = "submit" name = "commbut" value="Comments G" class="btn btn-success" />
+    <input type = "submit" name = "commbut" value="Comments" class="btn btn-success" />
+    <input type = "submit" name = "opndbut" value="Operands" class="btn btn-success" />
+    <input type = "submit" name = "opbut" value="Operators" class="btn btn-success" />
+    <input type = "submit" name = "ccbut" value="Complexity" class="btn btn-success" />
     </div>
+    <div class="btn-group">
+        <input type = "submit" name = "commbut2" value="Comments A" class="btn btn-primary" />
+        <input type = "submit" name = "opndbut2" value="Operands A" class="btn btn-primary" />
+        <input type = "submit" name = "opbut2" value="Operators A" class="btn btn-primary" />
+        <input type = "submit" name = "ccbut2" value="Complexity A" class="btn btn-primary" />
+        </div>
   </form>
 
-  <hr>
+
     <div class="container" align="left">
         <embed type="image/svg+xml" src= {{ gdata|safe }} />
     </div>
   <hr>
-    <p> Score </p>
-  <hr>
-    <p> Arima prediction </p>
-  <hr>
+  <div style="width: 100%">
+      <div class="sscore" style="margin-left: 10%; display: inline-block; ">
+          <p> Current Score </p>
+          {% for star in stars %}
+            <span class="fa fa-star checked"></span>
+          {% endfor %}
+      </div>
 
-    <p> Add phase button </p>
+      <div class="sscore" style="margin-left: 10%; display: inline-block; ">
+          <p> Last Score </p>
+          {% for star in pstars %}
+            <span class="fa fa-star checked"></span>
+          {% endfor %}
+      </div>
+
+      <div class="sscore" style="margin-left: 10%; display: inline-block; ">
+            <p> Progress </p>
+            {% if pstars|length > stars|length %}
+                <span class="fa fa-arrow-circle-down" style="color: rgb(219, 165, 18)"></span>
+            {% else %}
+                <span class="fa fa-arrow-circle-up" style="color: rgb(219, 165, 18)"></span>
+            {% endif %}
+      </div>
+  </div>
+  <hr>
 
     <form action="" method="post">
       <p>
@@ -66,9 +93,54 @@
   <hr>
 
   <style>
-  
-    .h2 {
+
+    body {
+        background: radial-gradient(600px at 50% 50% , rgb(201, 176, 176) 20%, rgba(177, 169, 169, 0.295) 70%);
+    }
+
+    .sscore {
+        font-family: Helvetica;
+        font-size: 40px;
+        transform: skewY(0deg);
+        letter-spacing: 4px;
+        word-spacing: -8px;
+        color: tomato;
+        text-shadow: 
+            -1px -1px 0 firebrick,
+            -2px -2px 0 firebrick,
+            -3px -3px 0 firebrick,
+            -4px -4px 0 firebrick,
+            -5px -5px 0 firebrick,
+            -6px -6px 0 firebrick,
+            -30px 20px 40px dimgrey
+    }
+
+
+    .ptitle {
         text-align: center;
+        font-family: 'Oswald', Helvetica, sans-serif;
+        font-size: 60px;
+        transform: skewY(0deg);
+        letter-spacing: 4px;
+        word-spacing: -8px;
+        color: tomato;
+        text-shadow: 
+            -1px -1px 0 firebrick,
+            -2px -2px 0 firebrick,
+            -3px -3px 0 firebrick,
+            -4px -4px 0 firebrick,
+            -5px -5px 0 firebrick,
+            -6px -6px 0 firebrick,
+            -7px -7px 0 firebrick,
+            -8px -8px 0 firebrick,
+    }
+  
+    h2 {
+        text-align: center;
+    }
+
+    .checked {
+        color: orange;
     }
 
   </style>

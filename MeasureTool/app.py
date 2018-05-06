@@ -1,8 +1,11 @@
 from flask import Flask, render_template, flash, request, redirect, url_for
 from wtforms import Form, TextField, TextAreaField, validators, StringField, SubmitField, IntegerField
-
+from operator import itemgetter
 
 import pygal
+import time
+import datetime
+import pprint as pp
 
 import user_projects as esc
 
@@ -12,8 +15,8 @@ app.config['SECRET_KEY'] = 'secret'
 
 
 class RForm(Form):
-    codelines = IntegerField('Code Lines', validators=[validators.InputRequired()])
-    commlines = IntegerField('Comments', validators=[validators.InputRequired()])
+    codelines = IntegerField('Code Lines', validators=[validators.InputRequired(message="Error")])
+    commlines = IntegerField('Comments', validators=[validators.DataRequired()])
     operlines = IntegerField('Operands', validators=[validators.InputRequired()])
     addbut = SubmitField('Add')
     
@@ -23,9 +26,19 @@ class RForm(Form):
 def index():
     return render_template('home.html')
 
+def create_pygraph2(title, g1, g2, xlabels, l1, l2):
+    graph = pygal.Line(height=420, legend_at_bottom=True, legend_at_bottom_columns=3)
+    graph.title = title
+    graph.x_labels = xlabels
+    graph.add(g1,  l1)
+    graph.add(g2,  l2)
+    graph_data = graph.render_data_uri()
+
+    return graph_data
+
 
 def create_pygraph(title, g1, g2, g3, xlabels, l1, l2, l3):
-    graph = pygal.Line(height=450)
+    graph = pygal.Line(height=420, legend_at_bottom=True, legend_at_bottom_columns=3)
     graph.title = title
     graph.x_labels = xlabels
     graph.add(g1,  l1)
@@ -36,56 +49,162 @@ def create_pygraph(title, g1, g2, g3, xlabels, l1, l2, l3):
     return graph_data
 
 
+def get_score():
+    return 4
+    
+
+
 @app.route('/measures', methods=['POST', 'GET', 'PUT', 'DELETE'])
 def measures():
+    print ("------ ********* MEASURES ---------")
 
     form = RForm()
 
+    project_name = request.args.get('proname')
+    ddlist = esc.get_project_data(project_name)
+    dlist = sorted(ddlist, key=itemgetter('insert_date'))
+
+    linecode  = []
+    linecomm  = []
+    linecommp = []
+    operands  = []
+    operandsp = []
+    dates  = []    
+    zeros = []
+
+    for d in dlist:
+        linecode.append(d['lcode'])
+        linecomm.append(d['lcom'])
+        linecommp.append(d['lcom_pred'])
+        operands.append(d['operands'])
+        operandsp.append(d['operands_pred'])
+        #dates.append(d['insert_date'])
+        zeros.append(0)
+        dates.append(time.strftime("%a %d %b %Y %H:%M:%S GMT", time.gmtime(d['insert_date'] / 1000.0)))
+
+    score = []
+    sc = esc.get_score(linecode[len(linecode)-1], linecomm[len(linecomm)-1], operands[len(operands)-1])
+    for i in range(sc):
+        score.append('*')
+
+    pscore = []
+    if len(linecode) >= 2:
+        sc = esc.get_score(linecode[len(linecode)-2], linecomm[len(linecomm)-2], operands[len(operands)-2])
+    for i in range(sc):
+        pscore.append('*')
+
     if request.method == 'POST':
-        '''
         if "addbut" in request.form:
-            if True:
-                lcode = int(request.form['codelines'])
-                lcome = int(request.form['commlines'])
-                oper  = int(request.form['operlines'])
-                return render_template("measures.html", form=form)
-        '''
+            lcode = int(request.form['codelines'])
+            lcome = int(request.form['commlines'])
+            oper  = int(request.form['operlines'])
+
+            esc.add_phase(project_name, lcode, lcome, oper)
+
+            score = []
+            sc = esc.get_score(lcode, lcome, oper)
+            for i in range(sc):
+                score.append('*')
+
+            graph_data = create_pygraph('Comments', 'Code Lines', 'Comm Lines', 'Comm Pred',
+                                        dates,
+                                        linecode,
+                                        linecomm,
+                                        linecommp)
+            p = request.args.get('proname')
+            return redirect(url_for('measures', proname=p))
+            #return render_template("measures.html", stars=score, pstars=pscore, gdata=graph_data, form=form, pname=request.args.get('proname'))
+        
 
         if "commbut" in request.form:
-            graph_data = create_pygraph('Comments', 'Code Lines', 'Comm Linse', 'Comm Pred',
-                                        ['0','1','2','3','4','5'],
-                                        [0, 120, 180, 276, 221, 320],
-                                        [0, 21, 23, 40, 42, 67],
-                                        [0, 50, 70, 94, 83, 130])
-            return render_template("measures.html", gdata = graph_data, form=form)
+            graph_data = create_pygraph('Comments', 'Code Lines', 'Comments', 'Comm Pred',
+                                        dates,
+                                        linecode,
+                                        linecomm,
+                                        linecommp)
+            p = request.args.get('proname')
+            return render_template("measures.html", stars=score, pstars=pscore,
+                                gdata=graph_data, form=form, pname=request.args.get('proname'))
+  
+        elif "opbut" in request.form:
+            graph_data = create_pygraph('Operators', 'Code Lines', 'Operators', 'Oprs Pred',
+                                        dates,
+                                        linecode,
+                                        linecomm,
+                                        linecommp)
+            p = request.args.get('proname')
+            return render_template("measures.html", stars=score, pstars=pscore,
+                                gdata=graph_data, form=form, pname=request.args.get('proname'))
+
+        elif "opndbut" in request.form:
+            graph_data = create_pygraph('Operands', 'Code Lines', 'Operands', 'Opnds Pred',
+                                        dates,
+                                        linecode,
+                                        linecomm,
+                                        linecommp)
+            p = request.args.get('proname')
+            return render_template("measures.html", stars=score, pstars=pscore,
+                                gdata=graph_data, form=form, pname=request.args.get('proname'))
+
+        elif "ccbut" in request.form:
+            graph_data = create_pygraph('Complexity', 'Code Lines', 'Cyclomatic C', 'CC Pred',
+                                        dates,
+                                        linecode,
+                                        linecomm,
+                                        linecommp)
+            return render_template("measures.html", stars=score, pstars=pscore,
+                                gdata=graph_data, form=form, pname=request.args.get('proname'))
+
+        if "commbut2" in request.form:
+            graph_data = create_pygraph2('Comments Difference', 'Predicted', 'Difference',
+                                        dates,
+                                        zeros,
+                                        [a - b for a, b in zip(linecomm, linecommp)])
+            p = request.args.get('proname')
+            return render_template("measures.html", stars=score, pstars=pscore,
+                                gdata=graph_data, form=form, pname=request.args.get('proname'))
+  
+        elif "opbut2" in request.form:
+            graph_data = create_pygraph2('Comments Difference', 'Predicted', 'Difference',
+                                        dates,
+                                        zeros,
+                                        [a - b for a, b in zip(linecomm, linecommp)])
+            p = request.args.get('proname')
+            return render_template("measures.html", stars=score, pstars=pscore,
+                                gdata=graph_data, form=form, pname=request.args.get('proname'))
+
+        elif "opndbut2" in request.form:
+            graph_data = create_pygraph2('Comments Difference', 'Predicted', 'Difference',
+                                        dates,
+                                        zeros,
+                                        [a - b for a, b in zip(linecomm, linecommp)])
+            p = request.args.get('proname')
+            return render_template("measures.html", stars=score, pstars=pscore,
+                                gdata=graph_data, form=form, pname=request.args.get('proname'))
+
         else:
-            graph = pygal.Line()
-            graph.fill = True
-            graph.title = 'Code metrics'
-            graph.x_labels = ['0','1','2','3','4','5']
-            graph.add('Lines of code',  [0, 120, 180, 276, 221, 320])
-            graph.fill = False
-            graph.add('Operands',  [0, 21, 23, 40, 42, 67])
-            graph.add('Operands predicted',  [0, 50, 70, 94, 83, 130])
-            graph_data = graph.render_data_uri()
-            return render_template("measures.html", gdata = graph_data, form=form)
+            graph_data = create_pygraph2('Comments Difference', 'Predicted', 'Difference',
+                                        dates,
+                                        zeros,
+                                        [a - b for a, b in zip(linecomm, linecommp)])
+            return render_template("measures.html", stars=score, pstars=pscore,
+                                gdata=graph_data, form=form, pname=request.args.get('proname'))
+
     else:
-        graph = pygal.Line()
-        graph.fill = True
-        graph.title = 'Code metrics'
-        graph.x_labels = ['0','1','2','3','4','5']
-        graph.add('Lines of code',  [0, 120, 180, 276, 221, 320])
-        graph.fill = False
-        graph.add('Comments',  [0, 21, 23, 40, 42, 67])
-        graph.add('Comments predicted',  [0, 50, 70, 94, 83, 130])
-        graph_data = graph.render_data_uri()
-        return render_template("measures.html", gdata = graph_data, form=form)
+        graph_data = create_pygraph('Comments', 'Code Lines', 'Operands', 'Oper Pred',
+                                        dates,
+                                        linecode,
+                                        linecomm,
+                                        linecommp)
+        return render_template("measures.html", stars=score, pstars=pscore,
+                            gdata=graph_data, form=form, pname=request.args.get('proname'))
 
 
 @app.route('/projects', methods=['POST', 'GET', 'PUT', 'DELETE'])
 def projects():
 
     plist = esc.get_projects()
+    plist = sorted(plist)
     if request.method == 'POST':
         if "create" in request.form:
             text = request.form['lname']
@@ -95,15 +214,18 @@ def projects():
             else:
                 esc.create_new_project(ptext)
                 plist = esc.get_projects()
-            return render_template('projects.html', projects=plist)
+                plist = sorted(plist)
+            return redirect(url_for('projects', projects=plist))
+            #return render_template('projects.html', projects=plist)
         else:
             for p in plist:
                 if p + "del" in request.form:
                     esc.delete_project("measure_" + p)
                     plist = esc.get_projects()
-                    return render_template('projects.html', projects=plist)
+                    plist = sorted(plist)
+                    return redirect(url_for('projects', projects=plist))
                 elif p in request.form:
-                    return redirect(url_for('measures'))
+                    return redirect(url_for('measures', proname=p))
 
     return render_template('projects.html', projects=plist)
 
