@@ -14,7 +14,7 @@
         <div class="container-fluid">
         <div id="navbar"  class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-              <li><a href="/home">MEASURE</a></li>
+              <li><a href="/home">STRACKER</a></li>
               <li><a href="/home">Home</a></li>
               <li><a href="/projects">Projects</a></li>
               <li><a href="/account">Account</a></li>
@@ -33,20 +33,23 @@
         <div style="width: 80%; margin: auto;">
             {% for project in projects %}
                 <div class="projectdiv" type="submit">
-                    <input type = "submit" name = {{ project }} value="{{ project }}" class="btn btn-primary btn-lg" class="subbut"/>
-                    <input type = "submit" name = {{ project + 'del'}} value="X" class="xbut" style="float: right; background-color: pink;"/>
+                    <input type = "submit" name = {{ project }} value="{{ project }}" class="btn btn-success" style="width: 50%; height: 40%"/>
+                    <input type = "submit" name = {{ project + 'del'}} value="X" 
+                            class="btn btn-success" style="float: right; width: 30%; height: 40%;"/>
                 </div>
             {% endfor %}
         </div>
         <hr>
         <div class="addpdiv">
+            <div style="float: left; width: 75%">
             <p class="par"> Add new project: </p>
             <input type="text" name="lname" class="createtext" /> 
-            <input type="submit" name = "create" value="Create" class="btn btn-primary" style="width:25%; height: 40px;"/>
+            </div>
+            <input type="submit" name = "create" value="Create" class="btn btn-success" style="width:25%; height: 100%;"/>
         </div>
     </form>
 
-    <hr>
+    <br>
 
 
     <style>
@@ -60,16 +63,17 @@
             /*background: linear-gradient(#13547a, #80d0c7);*/
             background: rgb(40, 129, 40);
             display: inline-block;
-            width: 40%;
-            margin-left: 10%;
-            height: 100px;
-            border:2px solid rgb(47, 65, 59);
+            width: 38%;
+            margin-left: 10.5%;
+            height: 85px;
+            border:2px solid rgb(40, 129, 40);
             border-radius: 4px;
         }
 
         .par {
-            font-family: Helvetica, sans-serif;
+            font-family: 'Oswald', Helvetica, sans-serif;
             font-size: 20px;
+            font-weight: 500;
             letter-spacing: 2px;
             color: rgb(31, 27, 27);
             margin-left: 1%;
@@ -79,7 +83,7 @@
             font-size: 20px;
             color: red;
             margin-left: 1%;
-            width: 70%;
+            width: 90%;
             display: inline-block;
             border: 1px solid #ccc;
             border-radius: 4px;
@@ -104,7 +108,7 @@
             display: inline-block;
             width: 23%;
             height: 100px;
-            border:2px solid rgb(8, 107, 74);
+            border:2px solid rgb(40, 129, 40);
             border-radius: 4px;
             margin-top: 10px;
             margin-left: 10px;
@@ -112,8 +116,8 @@
 
         .subbut:hover {
             opacity: 0.8;
-            width: 30%;
-            height: 60px;
+            width: 35%;
+            height: 65px;
         }
 
         .ptitle {

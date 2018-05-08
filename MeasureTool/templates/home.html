@@ -5,15 +5,16 @@
       <title>Measure - Home</title>
       <meta charset="utf-8">
       <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+      <link href='https://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
   </head>
 
   <body>
 
-    <nav class="navbar navbar-default" style="background-color: rgba(15,24,25,0.91);">
+    <nav class="navbar navbar-default" style="background-color: rgba(24, 41, 43, 0.91);">
         <div class="container-fluid">
         <div id="navbar"  class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-              <li><a href="/home">MEASURE</a></li>
+              <li><a href="/home">STRACKER</a></li>
               <li><a href="/home">Home</a></li>
               <li><a href="/projects">Projects</a></li>
               <li><a href="/account">Account</a></li>
@@ -22,16 +23,75 @@
         </div>
     </nav>
 
-    <h1> HOME </h1>
+    <div>
+      <h1 class="ptitle"> HOME </h1>
+    </div>
     <hr>
+    <br>
 
-
+    <div style="width: 90%; margin-left: 5%;">
+        <p class="subt"> What's STRACKER </p>
+        <p class="par"> STRACKER is a program that aims to increase the quality of 
+          software development by tracking and suggesting the dimensions of software metrics.</p>
+      </div>
+      <br>
+      <br>
+    <div style="width: 90%; margin-left: 5%;">
+      <p class="subt"> Create a project </p>
+      <p class="par"> To create a new project you must go to the <i>Projects</i>. 
+        At the bottom of the page, in the text box you must enter the name of the 
+        new project and then click the <i>Create</i> button. 
+        A new project has been created.</p>
+    </div>
+    <br>
+    <br>
+    <div style="width: 90%; margin-left: 5%;">
+      <p class="subt"> Open a project </p>
+      <p class="par"> If you want to open an existing project, click on the blue button with the name 
+          of the project you want. 
+          If you want to delete a project, click the x button for the project you want to delete</p>
+    </div>
+    <br>
+    <br>
+    <div style="width: 90%; margin-left: 5%;">
+      <p class="subt"> Work with a project </p>
+      <p class="par"> In a project you can track and analyze the software metrics of a project.
+          You can select the metric chart you want to view by selecting the appropriate button.
+          You can add a new stage of the project and you can check if the last update was better than the 
+          previous one.</p>
+    </div>
+    <br>
 
     <style>
+
       body {
-        background-image:
-      url("https://mdn.mozillademos.org/files/6457/mdn_logo_only_color.png");
+        background: rgb(44, 43, 43);
       }
+
+      .ptitle {
+            text-align: center;
+            font-family: 'Oswald', Helvetica, sans-serif;
+            font-size: 60px;
+            letter-spacing: 4px;
+            color: rgb(36, 134, 36);
+      }
+
+      .subt {
+        font-size: 32px;
+        color: rgb(36, 134, 36);
+        font-weight: 600;
+        letter-spacing: 3px;
+        margin-left: 1%;
+      }
+
+      .par {
+        font-size: 24px;
+        color: white;
+        font-weight: 600;
+        letter-spacing: 2px;
+        margin-left: 1%;
+      }
+
     </style>
 
   </body>

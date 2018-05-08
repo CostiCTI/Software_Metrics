@@ -11,6 +11,23 @@ from datetime import datetime
 from elasticsearch import Elasticsearch
 
 
+def delete_last_phase(index, event_date):
+
+	ES_HOST = {"host" : "localhost", "port" : 9200}
+	es = Elasticsearch()
+	project_name = 'measure_' + index
+
+	query = {
+		"query": { 
+			"match": {
+				"insert_date": event_date
+			}
+		}
+	}
+
+	es.delete_by_query(index=project_name, doc_type='metric', body=query)
+
+
 def delete_project(project_name):
 	'''
 		This function delete an index in elasticsearch
@@ -59,7 +76,7 @@ def load_model(file_name):
     return loaded_model
 
 
-def get_score(lcode, lcome, oper):
+def get_score(lcode, lcome, oper, option):
 
 	MODELCOMM = load_model('models/model_lr_codecomm')
 	MODELOP = load_model('models/model_lr_code_operands')
@@ -75,10 +92,16 @@ def get_score(lcode, lcome, oper):
 	#with open('cfg/score_rules.json') as json_data:
     #	d = json.load(json_data)
 
+	if option == "comments":
+		m = lcome
+		mp = compred
+	else:
+		m = oper
+		mp = oppred
 	score = 0
-	dif = abs(lcome - compred)
-	if compred != 0:
-		p = dif * 100 / compred
+	dif = abs(m - mp)
+	if mp != 0:
+		p = dif * 100 / mp
 	else:
 		# no data, new project
 		p = 100
